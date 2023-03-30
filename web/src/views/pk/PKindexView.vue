@@ -1,16 +1,16 @@
 <template>
-    <ContentFiled>
+    <PlayGround>
         <!-- 渲染到slot里面 -->
         对战
-    </ContentFiled>
+    </PlayGround>
 </template>
 
 <script>
-import ContentFiled from "../../components/ContentField.vue"
+import PlayGround from "../../components/PlayGround.vue"
 
 export default {
     components: {
-        ContentFiled
+        PlayGround
     }
 }
 </script>
