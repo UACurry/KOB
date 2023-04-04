@@ -7,6 +7,7 @@ const AC_GAME_OBJECT =  []
 export class AcGameObject{
     constructor() {
         AC_GAME_OBJECT.push(this);
+        // 求出来当前这帧 距离上一帧时间间隔 单位 ms
         this.timedelta  = 0;
         this.has_called_start = false;
     }
@@ -54,6 +55,7 @@ const step = timestamp => {
         }
         else{
             // 如果执行过start函数 就执行update函数
+            // 求出来当前这帧 距离上一帧时间间隔
             obj.timedelta = timestamp - last_timestamp;
             obj.update();
         }

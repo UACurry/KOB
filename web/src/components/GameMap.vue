@@ -1,7 +1,8 @@
 <!-- 用于在对战界面生成一个新的蒙版 -->
 <template>
     <div ref="parent" class="gamemap">
-        <canvas ref="canvas"></canvas>
+        <!-- tabindex="0" 可以获得用户操作 -->
+        <canvas ref="canvas" tabindex="0"></canvas>
     </div>
 </template>
 
