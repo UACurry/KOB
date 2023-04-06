@@ -6,7 +6,9 @@ import com.kob.backend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -17,24 +19,33 @@ public class UserController {
     UserMapper userMapper; // mybatis plus 帮我们实现的接口
 
     @GetMapping("/user/all/")
-    public List<User> getAll(){
+    public List<User> getAll() {
         return userMapper.selectList(null);
     }
 
     @GetMapping("/user/{userId}/")
-    public User getuser(@PathVariable int userId){
+    public User getuser(@PathVariable int userId) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("id",userId);
+        queryWrapper.eq("id", userId);
         return userMapper.selectOne(queryWrapper);
     }
 
-//    post不是明文传输
-    @GetMapping("/user/add/{userID}/{username}/{password}/")
-    public String addUser(@PathVariable int userID, @PathVariable String username, @PathVariable String password){
+    @GetMapping("/user/add/{userId}/{username}/{password}/")
+    public String addUser(
+            @PathVariable int userId,
+            @PathVariable String username,
+            @PathVariable String password) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(userID,username,encodedPassword);
+        User user = new User(userId, username, encodedPassword);
         userMapper.insert(user);
-        return "success";
+        return "Add User Successfully";
+    }
+
+    @GetMapping("/user/delete/{userId}/")
+    public String deleteUser(@PathVariable int userId) {
+        userMapper.deleteById(userId);
+        return "Delete User Successfully";
     }
 }
+
