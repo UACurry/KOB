@@ -30,6 +30,7 @@ public class UserController {
         return userMapper.selectOne(queryWrapper);
     }
 
+//    Get是明文请求
     @GetMapping("/user/add/{userId}/{username}/{password}/")
     public String addUser(
             @PathVariable int userId,
