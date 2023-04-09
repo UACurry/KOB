@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-//    如果需要自增必须增加的注解  33 分钟
+    // 如果需要自增必须增加的注解 Mybatis-plus 里面的
     @TableId(type = IdType.AUTO)
     private Integer id;
     private String username;

@@ -31,14 +31,14 @@ public class UserController {
     }
 
 //    Get是明文请求
-    @GetMapping("/user/add/{userId}/{username}/{password}/")
+    @GetMapping("/user/add/{userId}/{username}/{password}/{photo}/")
     public String addUser(
             @PathVariable int userId,
             @PathVariable String username,
-            @PathVariable String password) {
+            @PathVariable String password, @PathVariable String photo) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(userId, username, encodedPassword);
+        User user = new User(userId, username, encodedPassword,photo);
         userMapper.insert(user);
         return "Add User Successfully";
     }

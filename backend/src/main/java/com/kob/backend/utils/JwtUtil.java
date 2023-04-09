@@ -17,7 +17,7 @@ public class JwtUtil {
     // 有效期14天
     public static final long JWT_TTL = 60 * 60 * 1000L * 24 * 14;
 //    密钥
-    public static final String JWT_KEY = "KJDKFJKjksdfsakodfjk23424sdfJKqqeqdadk";
+    public static final String JWT_KEY = "KJDKFJKjksdf1231da1231dadsakodfjk23424sdfJKqqeqdadk";
 
     public static String getUUID() {
         return UUID.randomUUID().toString().replaceAll("-", "");

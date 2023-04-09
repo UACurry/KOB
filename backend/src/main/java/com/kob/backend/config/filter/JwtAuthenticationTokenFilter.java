@@ -21,6 +21,7 @@ import java.io.IOException;
 
 
 //验证jwt-token是否合法，如果合法就自动将user提取到上下文中
+//用来验证jwt token，如果验证成功，则将User信息注入上下文中
 @Component
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     @Autowired
@@ -28,6 +29,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
+//        未来从前端读的 报文  Authorization
         String token = request.getHeader("Authorization");
 
         if (!StringUtils.hasText(token) || !token.startsWith("Bearer ")) {
