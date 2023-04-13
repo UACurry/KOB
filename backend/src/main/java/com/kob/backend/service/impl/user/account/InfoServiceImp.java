@@ -15,7 +15,8 @@ import java.util.Map;
 public class InfoServiceImp implements InfoService {
     @Override
     public Map<String, String> getinfo() {
-        UsernamePasswordAuthenticationToken authentication = (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        UsernamePasswordAuthenticationToken authentication =
+                (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
 //        拿到user   getPrincipal 可以获取到代表当前用户的信息，
         UserDetailsImpl loginUser = (UserDetailsImpl) authentication.getPrincipal();

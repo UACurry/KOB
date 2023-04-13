@@ -26,7 +26,8 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public Map<String, String> getToken(String username, String password) {
 //        封装用户名 和 密码 因为在数据库存的时候不是存明文 此时传进去 不会传进明文密码 加密后的密码
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,password);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(username,password);
 
 //        验证用户是否能够登陆 （账户和密码是否匹配) 如果登陆失败 会自动处理
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
