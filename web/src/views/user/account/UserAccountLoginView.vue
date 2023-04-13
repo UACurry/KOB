@@ -38,12 +38,29 @@ export default {
         let password = ref('');
         let error_message = ref('');
 
+        // 用于登陆持久化 判断是否有local store
+        // const jwt_token = localStorage.getItem("jwt_token");
+        // if (jwt_token) {
+        //     // 调用user.js 中的 mutation 需要commit
+        //     store.commit("updateToken", jwt_token);
+        //     // 验证jwt_token 是否过期  调用user.js 里面的actions
+        //     store.dispatch("getinfo", {
+        //         // 没有过期 就跳转 home
+        //         success() {
+        //             router.push({ name: "home" });
+        //         },
+        //         error() {
+        //         }
+        //     })
+        // }
+
         // 触发函数
         const login = () => {
             // 清空
             error_message.value = "";
             // 调用user.js 中的actions
             store.dispatch("login", {
+                // 看后端需要什么东西， controller里面
                 username: username.value,
                 password: password.value,
                 success() {
