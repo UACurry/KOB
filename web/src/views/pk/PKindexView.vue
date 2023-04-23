@@ -44,13 +44,36 @@ export default {
                         username: data.opponent_username,
                         photo: data.opponent_photo,
                     });
+                    // 匹配成功之后，延迟两秒再展示地图
                     setTimeout(() => {
                         store.commit("updateStatus", "playing");
-                    }, 2000);
-                    // 更新一下地图
-                    store.commit("updateGamemap", data.gamemap);
+                    }, 200);
+                    // 更新一下地图 
+                    // 后续在后端中更新了传入的 resp 新定义了一个 respGame 所以需要传入全方位信息 
+                    // 键值对更改为了 game： respGame
+                    store.commit("updateGame", data.game);
+                } else if (data.event === "move") {
+                    console.log(data);
+                    const game = store.state.pk.gameObject;
+                    const [snake0, snake1] = game.snakes;
+                    // a_direction 是后端设计好的
+                    snake0.set_direction(data.a_direction);
+                    snake1.set_direction(data.b_direction);
+                } else if (data.event === "result") {
+                    console.log(data);
+                    const game = store.state.pk.gameObject;
+                    const [snake0, snake1] = game.snakes;
+
+                    // 判断蛇死去的逻辑
+                    if (data.loser === "all" || data.loser === "A") {
+                        snake0.status = "die";
+                    }
+                    if (data.loser === "all" || data.loser === "B") {
+                        snake1.status = "die";
+                    }
+
+                    store.commit("updateLoser", data.loser);
                 }
-                console.log(data);
             }
 
             //关闭

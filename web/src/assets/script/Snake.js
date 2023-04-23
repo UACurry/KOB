@@ -94,10 +94,10 @@ export class Snake extends AcGameObject{
             this.cells[i] = JSON.parse(JSON.stringify(this.cells[i-1]));
         }
 
-        // 下一步操作非法
-        if(!this.gamemap.check_valid(this.next_cell)){
-            this.status = "die";
-        }
+        // 下一步操作非法 移动到后端判断
+        // if(!this.gamemap.check_valid(this.next_cell)){
+        //     this.status = "die";
+        // }
     }
 
     // 移动  判断两条蛇是否都准备好下一回合

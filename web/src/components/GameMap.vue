@@ -20,7 +20,12 @@ export default {
         onMounted(() => {
             // 创建一个GameMap对象
             // 在 mdn 搜讲解
-            new GameMap(canvas.value.getContext('2d'), parent.value, store)
+            // new GameMap(canvas.value.getContext('2d'), parent.value, store)
+            store.commit(
+                "updateGameObject",
+                new GameMap(canvas.value.getContext('2d'), parent.value, store)
+            );
+
         });
 
         return {

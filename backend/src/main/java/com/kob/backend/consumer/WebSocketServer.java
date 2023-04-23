@@ -23,7 +23,8 @@ public class WebSocketServer {
 
 //    维护全局 链接 websocket  ConcurrentHashMap 线程安全的hash表
 //    static 所有实例均可见 公用 在每个实例里面 都要访问同一个hash表
-    private static final ConcurrentHashMap<Integer,WebSocketServer> users = new ConcurrentHashMap<>();
+//    users 存储所有玩家的 websocket链接
+    public static final ConcurrentHashMap<Integer,WebSocketServer> users = new ConcurrentHashMap<>();
 
 //    开一个匹配池 也要用线程安全的  CopyOnWriteArraySet 就是线程安全的的
     private static final CopyOnWriteArraySet<User> matchpool = new CopyOnWriteArraySet<>();
@@ -36,6 +37,8 @@ public class WebSocketServer {
 
 //    注入数据库
     private static UserMapper userMapper;
+
+    private Game game = null;
 
 //    存地图
 
@@ -87,9 +90,29 @@ public class WebSocketServer {
             matchpool.remove(a);
             matchpool.remove(b);
 
-//
-            Game game = new Game(13, 14, 20);
+//            初始化传入构造参数
+            Game game = new Game(13, 14, 20, a.getId(), b.getId());
             game.createMap();
+//            是 Thread 函数的一个api 可以另起一个线程来执行这个函数
+            game.start();
+
+//            把game 赋给两名玩家 users.get 可以获取 a 的websocket链接
+            users.get(a.getId()).game = game;
+            users.get(b.getId()).game = game;
+
+
+//            存放game全局信息的
+            JSONObject respGame = new JSONObject();
+            respGame.put("a_id",game.getPlayerA().getId());
+            respGame.put("a_sx", game.getPlayerA().getSx());
+            respGame.put("a_sy", game.getPlayerA().getSy());
+
+            respGame.put("b_id",game.getPlayerB().getId());
+            respGame.put("b_sx", game.getPlayerB().getSx());
+            respGame.put("b_sy", game.getPlayerB().getSy());
+
+//            把地图传过去
+            respGame.put("map",game.getG());
 
 
 //            respA 是匹配成功的链接 不一定是 A 和 B 的链接
@@ -97,7 +120,8 @@ public class WebSocketServer {
             respA.put("event", "is-matched");
             respA.put("opponent_username", b.getUsername());
             respA.put("opponent_photo", b.getPhoto());
-            respA.put("gamemap", game.getG());
+//            通过此 把两名玩家信息传过去 同时也能获得地图
+            respA.put("game", respGame);
 //            用user.get 来获取 A 的 websocket链接
             users.get(a.getId()).SendMessage(respA.toJSONString());
 
@@ -105,7 +129,7 @@ public class WebSocketServer {
             respB.put("event", "is-matched");
             respB.put("opponent_username", a.getUsername());
             respB.put("opponent_photo", a.getPhoto());
-            respB.put("gamemap", game.getG());
+            respB.put("game", respGame);
 //            用user.get 来获取 A 的 websocket链接
             users.get(b.getId()).SendMessage(respB.toJSONString());
 
@@ -113,9 +137,19 @@ public class WebSocketServer {
     }
 
     private void stopMatching(){
-        System.out.println("startMatching");
+        System.out.println("stopMatching");
         matchpool.remove(this.user);
     }
+
+    private void move(int direction){
+//        判断是哪个用的操作
+        if(game.getPlayerA().getId().equals(user.getId())){
+            game.setNextStepA(direction);
+        } else if(game.getPlayerB().getId().equals(user.getId())){
+            game.setNextStepB(direction);
+        }
+    }
+
 
 //    当前端向后端发送信息 所有逻辑都在这里
     @OnMessage
@@ -125,14 +159,16 @@ public class WebSocketServer {
 //        解析message
         JSONObject data = JSONObject.parseObject(message);
 
-//        解析完之后 取出event  event就是前端定义好的 一个字典的键
+//        解析完之后 取出event的值  event就是前端定义好的 一个字典的键
         String event = data.getString("event");
 
-//        前端中 matchground 里面写好的
+//        前端中 matchground 里面写好的 前端中定义的 event时间
         if("start-matching".equals(event)){
             startMatching();
-        } else if ("start-matching".equals(event)) {
+        } else if ("stop-matching".equals(event)) {
             stopMatching();
+        } else if ("move".equals(event)) {
+            move(data.getInteger("direction"));
         }
 
     }
