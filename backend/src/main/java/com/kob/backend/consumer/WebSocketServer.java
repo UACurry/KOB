@@ -3,6 +3,7 @@ package com.kob.backend.consumer;
 import com.alibaba.fastjson.JSONObject;
 import com.kob.backend.consumer.utils.Game;
 import com.kob.backend.consumer.utils.JwtAuthentication;
+import com.kob.backend.mapper.RecordMapper;
 import com.kob.backend.mapper.UserMapper;
 import com.kob.backend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class WebSocketServer {
 //    注入数据库
     private static UserMapper userMapper;
 
+    public static RecordMapper recordMapper;
+
     private Game game = null;
 
 //    存地图
@@ -47,6 +50,11 @@ public class WebSocketServer {
     public void setUserMapper(UserMapper userMapper){
 //        静态变量访问时候 用类名来访问
         WebSocketServer.userMapper = userMapper;
+    }
+
+    @Autowired
+    public void setRecordMapper(RecordMapper recordMapper){
+        WebSocketServer.recordMapper = recordMapper;
     }
 
     @OnOpen

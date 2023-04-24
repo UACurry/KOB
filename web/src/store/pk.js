@@ -19,6 +19,8 @@ export default{
         b_sx: 0,
         b_sy: 0,
         gameObject: null,
+        // 记录是谁输了
+        loser: "none",  // none、all、A、B
     },
     // 用来修改数据
     mutations: {

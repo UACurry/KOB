@@ -43,6 +43,7 @@ public class Player {
             y += dy[d];
             res.add(new Cell(x, y));
             if (!check_tail_increasing( ++ step)) {
+                // 这里是不增加长度时才要移除尾巴
 //               如果蛇尾 不增加 删掉蛇尾 因为蛇尾在第一个 所以index 为 0
                 res.remove(0);
             }
@@ -51,4 +52,14 @@ public class Player {
 
     }
 
+//    将步数的List 列表转换为 string 因为数据库中存的是string
+    public String getStepsString(){
+//        StringBuilder 类也叫做字符串缓冲区，可以提高字符串的操作效率（可以看成一个长度可以变化的字符串）
+//        因为声明为string类的话 每次添加进去 很浪费内存
+        StringBuilder res = new StringBuilder();
+        for(int d : steps){
+            res.append(d);
+        }
+        return res.toString();
+    }
 }

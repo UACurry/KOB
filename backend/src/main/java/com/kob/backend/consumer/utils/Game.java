@@ -2,8 +2,10 @@ package com.kob.backend.consumer.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.kob.backend.consumer.WebSocketServer;
+import com.kob.backend.pojo.Record;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
@@ -262,11 +264,46 @@ public class Game extends Thread{
         }
     }
 
+//    把map展开成一个一维的01字符串
+    private String getMapString(){
+        StringBuilder res = new StringBuilder();
+        for(int i=0;i<rows;i++){
+            for(int j =0;j < cols;j++){
+                res.append(g[i][j]);
+            }
+        }
+        return res.toString();
+    }
+
+//    向前端发送结果之前 先把数据存到数据库中
+    private void saveToDatabase() {
+        Record record = new Record(
+                null,
+                playerA.getId(),
+                playerA.getSx(),
+                playerA.getSy(),
+                playerB.getId(),
+                playerB.getSx(),
+                playerB.getSy(),
+//                列表转换为 字符串
+                playerA.getStepsString(),
+                playerB.getStepsString(),
+                getMapString(),
+                loser,
+                new Date()
+        );
+
+//        存储对局记录进入
+        WebSocketServer.recordMapper.insert(record);
+    }
+
 
     private void sendResult(){ // 向两名玩家 发送消息
         JSONObject resp = new JSONObject();
         resp.put("event","result");
         resp.put("loser",loser);
+//        在向前端发送消息时候 先存入数据库
+        saveToDatabase();
         sendAllMessage(resp.toJSONString());
     }
 
