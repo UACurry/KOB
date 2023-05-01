@@ -19,7 +19,7 @@ export default {
     },
     setup() {
         const store = useStore();
-        const socketUrl = `ws://127.0.0.1:1793/websocket/${store.state.user.token}/`;
+        const socketUrl = `ws://127.0.0.1:1799/websocket/${store.state.user.token}/`;
 
         let socket = null;
 
