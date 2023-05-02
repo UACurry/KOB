@@ -3,8 +3,10 @@ package com.kob.backend.consumer;
 import com.alibaba.fastjson.JSONObject;
 import com.kob.backend.consumer.utils.Game;
 import com.kob.backend.consumer.utils.JwtAuthentication;
+import com.kob.backend.mapper.BotMapper;
 import com.kob.backend.mapper.RecordMapper;
 import com.kob.backend.mapper.UserMapper;
+import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,10 +46,13 @@ public class WebSocketServer {
 
     public static RecordMapper recordMapper;
 
-    private static RestTemplate restTemplate;
+    private static BotMapper botMapper;
 
-    private Game game = null;
+    public static RestTemplate restTemplate;
 
+    public Game game = null;
+
+//    向 matching system 发送信息时候 的url
     private final static String addPlayerUrl = "http://127.0.0.1:1792/player/add/";
     private final static String removePlayerurl = "http://127.0.0.1:1792/player/remove/";
 
@@ -69,6 +74,11 @@ public class WebSocketServer {
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate){
         WebSocketServer.restTemplate = restTemplate;
+    }
+
+    @Autowired
+    public void setBotMapper(BotMapper botMapper){
+        WebSocketServer.botMapper = botMapper;
     }
 
     @OnOpen
@@ -102,12 +112,22 @@ public class WebSocketServer {
     }
 
 //    public 在外面能调用它 static 能够通过类名来调用
-    public static void startGame(Integer aId, Integer bId){
+    public static void startGame(Integer aId, Integer aBotId, Integer bId, Integer bBotId){
         User a = userMapper.selectById(aId);
         User b = userMapper.selectById(bId);
 
+//        可能为空 如果 是亲自出马 botid = -1 那么botA 可能为空
+        Bot botA = botMapper.selectById(aBotId);
+        Bot botB = botMapper.selectById(bBotId);
+
         //            初始化传入构造参数
-        Game game = new Game(13, 14, 20, a.getId(), b.getId());
+        Game game = new Game(13,
+                14,
+                20,
+                a.getId(),
+                botA,
+                b.getId(),
+                botB);
         game.createMap();
 //            是 Thread 函数的一个api 可以另起一个线程来执行这个函数
         game.start();
@@ -156,13 +176,15 @@ public class WebSocketServer {
             users.get(b.getId()).SendMessage(respB.toJSONString());
     }
 
-    private void startMatching(){
-        System.out.println("startMatching");
+    private void startMatching(Integer botId){
+        System.out.println("startMatchin  g");
 
 //        开始匹配时候 向Matching system 发送请求
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("user_id", this.user.getId().toString());
         data.add("rating", this.user.getRating().toString());
+//        给matching system发的时候 也要加上botid
+        data.add("bot_id",botId.toString());
 //        访问一下 addPlayerUrl 请求 向Matching system 发送请求
         restTemplate.postForObject(addPlayerUrl, data, String.class);
 
@@ -190,22 +212,27 @@ public class WebSocketServer {
         restTemplate.postForObject(removePlayerurl, data, String.class);
     }
 
+//    移动蛇 人工的移动 如果是bot 则屏蔽人工输入
     private void move(int direction){
 //        判断是哪个用的操作
-        if(game.getPlayerA().getId().equals(user.getId())){
-            game.setNextStepA(direction);
-        } else if(game.getPlayerB().getId().equals(user.getId())){
-            game.setNextStepB(direction);
+        if (game.getPlayerA().getId().equals(user.getId())) {
+//            如果是 -1 则是人工操作 否则要屏蔽人工操作
+            if (game.getPlayerA().getBotId().equals(-1))  // 亲自出马
+                game.setNextStepA(direction);
+        } else if (game.getPlayerB().getId().equals(user.getId())) {
+            if (game.getPlayerB().getBotId().equals(-1))  // 亲自出马
+                game.setNextStepB(direction);
         }
+
     }
 
 
-//    当前端向后端发送信息 所有逻辑都在这里
+//    当前端向后端发送信息 所有逻辑都在这里 以及 信息也在这里
     @OnMessage
     public void onMessage(String message, Session session) { // 当作一个路由
         // 从Client接收消息
         System.out.println("recive");
-//        解析message
+//        解析message 变成 data
         JSONObject data = JSONObject.parseObject(message);
 
 //        解析完之后 取出event的值  event就是前端定义好的 一个字典的键
@@ -213,7 +240,9 @@ public class WebSocketServer {
 
 //        前端中 matchground 里面写好的 前端中定义的 event时间
         if("start-matching".equals(event)){
-            startMatching();
+//            拿到从前端穿的数据 要把前端用户选择哪个bot 把botid传给后端
+//            bot_id 与前端键值对 对应 在matchground.vue 中
+            startMatching(data.getInteger("bot_id"));
         } else if ("stop-matching".equals(event)) {
             stopMatching();
         } else if ("move".equals(event)) {

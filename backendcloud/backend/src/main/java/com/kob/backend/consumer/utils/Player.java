@@ -14,6 +14,9 @@ import java.util.List;
 @NoArgsConstructor
 public class Player {
     private Integer id;
+//    -1 表示亲自出马 否则是ai
+    private Integer botId;
+    private String botcode;
 
 //    起始坐标
     private Integer sx;

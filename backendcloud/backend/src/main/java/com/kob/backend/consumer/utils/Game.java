@@ -2,7 +2,10 @@ package com.kob.backend.consumer.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.kob.backend.consumer.WebSocketServer;
+import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.Record;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,14 +43,40 @@ public class Game extends Thread{
 //    记录一下谁输了
     private String loser = "";
 
-//    初始化一个构造函数  初始时候 需要传入两名玩家 id
-    public Game(Integer rows, Integer cols, Integer inner_walls_count, Integer idA, Integer idB) {
+//    传给 botrunning  请求执行代码
+    private final static String addBotUrl = "http://127.0.0.1:1798/bot/add/";
+
+
+    //    初始化一个构造函数  初始时候 需要传入两名玩家 id
+    public Game(Integer rows,
+                Integer cols,
+                Integer inner_walls_count,
+                Integer idA,
+                Bot botA,
+                Integer idB,
+                Bot botB) {
         this.rows = rows;
         this.cols = cols;
         this.inner_walls_count = inner_walls_count;
         this.g = new int[rows][cols];
-        playerA = new Player(idA, rows - 2, 1, new ArrayList<>());
-        playerB = new Player(idB, 1, cols - 2, new ArrayList<>());
+
+        Integer botIdA = -1;
+        Integer botIdB = -1;
+        String botCodeA = "";
+        String botCodeB = "";
+
+        if(botA != null){
+            botIdA = botA.getId();
+            botCodeA = botA.getContent();
+        }
+
+        if(botB != null){
+            botIdB = botB.getId();
+            botCodeB = botB.getContent();
+        }
+
+        playerA = new Player(idA, botIdA, botCodeA,rows - 2, 1, new ArrayList<>());
+        playerB = new Player(idB, botIdB, botCodeB, 1, cols - 2, new ArrayList<>());
     }
 
 //    为了让WebSocket中能够获取到 Game中 的player
@@ -153,7 +182,44 @@ public class Game extends Thread{
         }
     }
 
-//    实现下一步操作 等待两名玩家下一步操作
+//    编码成字符串  地图 # 自己起始坐标 # 自己纵坐标 # 我的操作 #.......
+    private String getInput(Player player) {  // 将当前的局面信息，编码成字符串
+        Player me, you;
+        if (playerA.getId().equals(player.getId())) {
+            me = playerA;
+            you = playerB;
+        } else {
+            me = playerB;
+            you = playerA;
+        }
+
+        return getMapString() + "#" +
+                me.getSx() + "#" +
+                me.getSy() + "#(" +
+//                操作序列可能为空 所以用括号括起来
+                me.getStepsString() + ")#" +
+                you.getSx() + "#" +
+                you.getSy() + "#(" +
+                you.getStepsString() + ")";
+    }
+
+    //    判断是否是人 或者 是bot 是bot则需要让botrunningsystem执行
+    private void sendBotCode(Player player) {
+        if (player.getBotId().equals(-1)) {
+            return;  // 亲自出马，不需要执行代码
+        }
+//        否则则执行代码 需要将代码传到 botrunningsystem
+        MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+        data.add("user_id", player.getId().toString());
+        data.add("bot_code", player.getBotcode());
+//        传输当前的地图
+        data.add("input", getInput(player));
+//        发送请求 请求执行代码
+        WebSocketServer.restTemplate.postForObject(addBotUrl, data, String.class);
+    }
+
+
+    //    实现下一步操作 等待两名玩家下一步操作
 //    也就是两个线程 （nextstep 和 而setNextStepA） 同时读写一个变量 所以要加锁
     public boolean nextStep(){
 //        先睡200ms
@@ -162,6 +228,10 @@ public class Game extends Thread{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+//        要不要发送一端代码 让其自动执行
+        sendBotCode(playerA);
+        sendBotCode(playerB);
 
 //        拿到锁之后进行加锁之后的操作
         for(int i = 0;i < 50;i++){

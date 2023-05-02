@@ -30,10 +30,10 @@ public class MatchingPool extends Thread{
     }
 
 
-    public void addPlayer(Integer userId, Integer rating) {
+    public void addPlayer(Integer userId, Integer rating, Integer botId) {
         lock.lock();
         try {
-            players.add(new Player(userId, rating, 0));
+            players.add(new Player(userId, rating, 0, botId));
         } finally {
             lock.unlock();
         }
@@ -72,13 +72,16 @@ public class MatchingPool extends Thread{
         return ratingDelta <= waitingTime * 10;
     }
 
-//    将结果返回给 backend
+//    将结果返回给 backend 端 需要用一个sendresult
     private void sendResult(Player a, Player b) {  // 返回匹配结果
         System.out.println("send result: " + a + " " + b);
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("a_id", a.getUserId().toString());
+        data.add("a_bot_id",a.getBotId().toString());
         data.add("b_id", b.getUserId().toString());
-        //    请求backend端
+        data.add("b_bot_id",b.getBotId().toString());
+        //    请求backend端 将信息发给backend端 也就是 把匹配好的信息 给backend
+//        backend 从而进行接受 接受在 startGameController
         restTemplate.postForObject(startGameUrl, data, String.class);
     }
 

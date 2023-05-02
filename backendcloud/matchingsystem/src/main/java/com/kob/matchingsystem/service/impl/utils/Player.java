@@ -12,4 +12,6 @@ public class Player {
     private Integer userId;
     private Integer rating;
     private Integer waitingTime;  // 等待时间
+//    匹配时候 当前用户选择哪个bot出战
+    private Integer botId;
 }

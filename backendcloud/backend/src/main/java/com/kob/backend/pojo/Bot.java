@@ -19,6 +19,7 @@ public class Bot {
     private Integer userId;
     private String title;
     private String description;
+//    content 表示代码
     private String content;
 
 //    定义日期格式
