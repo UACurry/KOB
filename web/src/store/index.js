@@ -1,6 +1,7 @@
 import { createStore } from 'vuex'
 import ModuleUser from './user'
 import ModulePk from './pk'
+import ModuleRecord from './record'
 
 // Vuex持久化插件(vuex-persistedstate)解决刷新数据消失的问题
 import createPersistedState from "vuex-persistedstate"
@@ -16,7 +17,8 @@ export default createStore({
     // 存全局用户信息
     user: ModuleUser,
 
-    pk: ModulePk
+    pk: ModulePk,
+    record: ModuleRecord,
   },
 
 

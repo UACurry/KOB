@@ -42,7 +42,7 @@ public class WebSocketServer {
     private Session session = null;
 
 //    注入数据库
-    private static UserMapper userMapper;
+    public static UserMapper userMapper;
 
     public static RecordMapper recordMapper;
 
