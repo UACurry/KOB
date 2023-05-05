@@ -13,7 +13,7 @@ public class RegisterController {
     @Autowired
     private RegisterService registerService;
 
-    @PostMapping("/user/account/register/")
+    @PostMapping("/api/user/account/register/")
 //    RequestParam 用来从前端获取参数
     public Map<String, String> register(@RequestParam Map<String,String> map){
 //        "username"  "password" "confimedPassword" 前端要和他对应 在前端的data里面

@@ -166,7 +166,7 @@ export default {
         // 刷新用户的bot列表
         const refresh_bots = () => {
             $.ajax({
-                url: "http://127.0.0.1:1799/user/bot/getlist/",
+                url: "http://127.0.0.1/api/user/bot/getlist/",
                 type: "get",
                 // 这个接口不需要传参数 但是getlist需要验证用户
                 headers: {
@@ -186,7 +186,7 @@ export default {
             // 需要将上一次报错信息清空
             botadd.error_message = "";
             $.ajax({
-                url: "http://127.0.0.1:1799/user/bot/add/",
+                url: "http://127.0.0.1/api/user/bot/add/",
                 type: "post",
                 // 需要传的数据和后端中 impl对应 后端中 add也只需要这三个
                 data: {
@@ -220,7 +220,7 @@ export default {
         const update_bot = (bot) => {
             botadd.error_message = "";
             $.ajax({
-                url: "http://127.0.0.1:1799/user/bot/update/",
+                url: "http://127.0.0.1/api/user/bot/update/",
                 type: "post",
                 // 根据后端需要的参数来
                 data: {
@@ -248,7 +248,7 @@ export default {
         // 删除一个bot
         const remove_bot = (bot) => {
             $.ajax({
-                url: "http://127.0.0.1:1799/user/bot/remove/",
+                url: "http://127.0.0.1/api/user/bot/remove/",
                 type: "post",
                 data: {
                     bot_id: bot.id,

@@ -1,10 +1,13 @@
 package com.kob.botrunningsystem.utils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 // 智能一点的蛇
-public class Bot implements com.kob.botrunningsystem.utils.BotInterface{
+public class Bot implements java.util.function.Supplier<Integer>{
     static class Cell {
         public int x, y;
         public Cell(int x, int y) {
@@ -41,7 +44,6 @@ public class Bot implements com.kob.botrunningsystem.utils.BotInterface{
     }
 
 //    解码一下 之前的input
-    @Override
     public Integer nextMove(String input) {
 //        用正则分开
         String[] strs = input.split("#");
@@ -77,4 +79,17 @@ public class Bot implements com.kob.botrunningsystem.utils.BotInterface{
 //        如果没有方向可以走 就向上走
         return 0;
     }
+
+//    改为文件读取
+    @Override
+    public Integer get() {
+        File file = new File("input.txt");
+        try {
+            Scanner sc = new Scanner(file);
+            return nextMove(sc.next());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

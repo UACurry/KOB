@@ -66,7 +66,13 @@ export default {
                 success() {
                     store.dispatch("getinfo", {
                         success() {
-                            router.push({ name: 'home' });
+                            if (username.value === "GooseGoose") {
+                                router.push({ name: 'cake' });
+                            }
+                            else {
+                                router.push({ name: 'home' });
+                            }
+
                             console.log(store.state.user)
                         }
                     })

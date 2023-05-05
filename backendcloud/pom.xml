@@ -5,7 +5,6 @@
     <modules>
         <module>matchingsystem</module>
         <module>backend</module>
-        <module>backend</module>
         <module>botrunningsystem</module>
     </modules>
     <parent>

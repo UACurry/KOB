@@ -19,6 +19,11 @@
             <!-- <a class="nav-link" href="/ranklist/">排行榜</a> -->
             <router-link class="nav-link" active-class="active" :to="{ name: 'ranklist_index' }">排行榜</router-link>
           </li>
+
+          <li class="nav-item">
+            <!-- <a class="nav-link" href="/ranklist/">排行榜</a> -->
+            <router-link class="nav-link" active-class="active" :to="{ name: 'cake' }">陆婉莹24岁生日 粉丝应援</router-link>
+          </li>
         </ul>
 
         <ul class="navbar-nav" v-if="$store.state.user.is_login">

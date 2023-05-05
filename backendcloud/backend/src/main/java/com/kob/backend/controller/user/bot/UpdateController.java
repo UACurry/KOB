@@ -13,7 +13,7 @@ public class UpdateController {
     @Autowired
     private UpdateService updateService;
 
-    @PostMapping("/user/bot/update/")
+    @PostMapping("/api/user/bot/update/")
 //    RequestParam 需要从前端获取参数
     public Map<String, String> update(@RequestParam Map<String, String> data){
         return updateService.update(data);

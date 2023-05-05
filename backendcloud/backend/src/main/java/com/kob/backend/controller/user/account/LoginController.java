@@ -14,7 +14,7 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
-    @PostMapping("/user/account/token/")
+    @PostMapping("/api/user/account/token/")
 //    RequestParam 将post请求 从这里面拿出来
     public Map<String, String> getToken(@RequestParam Map<String, String> map){
         String username = map.get("username");

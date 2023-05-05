@@ -7,6 +7,8 @@ import UserBotindexView from '../views/user/bot/UserBotindexView'
 import NotFound from '../views/error/NotFound'
 import UserAccountLoginView from '../views/user/account/UserAccountLoginView'
 import UserAccountRegisterView from '../views/user/account/UserAccountRegisterView'
+import CakeView from '../views/birthday/CakeView'
+
 import store from '../store/index'
 
 const routes = [
@@ -74,6 +76,15 @@ const routes = [
     component: UserAccountRegisterView,
     meta: {
       requestAuth: false,
+    }
+  },
+
+  {
+    path: "/lwy/goose/birthday/",
+    name: "cake",
+    component: CakeView,
+    meta: {
+      requestAuth: true,
     }
   },
  

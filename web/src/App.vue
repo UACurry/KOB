@@ -21,7 +21,7 @@ export default {
   },
   setup() {
     // $.ajax({
-    //   url: "http://127.0.0.1:1793/user/account/info/",
+    //   url: "http://127.0.0.1:1799/user/account/info/",
     //   type: "get",
     //   // 报文
     //   headers: {
@@ -37,7 +37,7 @@ export default {
     // });
 
     // $.ajax({
-    //   url: "http://127.0.0.1:1793/user/account/register/",
+    //   url: "http://127.0.0.1:1799/user/account/register/",
     //   type: "post",
     //   data: {
     //     username: "lx_2",
@@ -60,7 +60,7 @@ export default {
 <!-- css -->
 <style>
 body {
-  background-image: url("./assets/img/background.png");
+  background-image: url("./assets/img/e.jpg");
   /* 百分百填充 */
   background-size: cover;
 }
