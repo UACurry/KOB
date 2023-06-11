@@ -22,7 +22,12 @@
 
           <li class="nav-item">
             <!-- <a class="nav-link" href="/ranklist/">排行榜</a> -->
-            <router-link class="nav-link" active-class="active" :to="{ name: 'cake' }">陆婉莹24岁生日 粉丝应援</router-link>
+            <router-link class="nav-link" active-class="active" :to="{ name: 'cake' }">LwYyyy本命年之页</router-link>
+          </li>
+
+          <li class="nav-item">
+            <!-- <a class="nav-link" href="/ranklist/">排行榜</a> -->
+            <router-link class="nav-link" active-class="active" :to="{ name: 'game' }">小游戏</router-link>
           </li>
         </ul>
 

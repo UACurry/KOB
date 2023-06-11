@@ -8,6 +8,7 @@ import NotFound from '../views/error/NotFound'
 import UserAccountLoginView from '../views/user/account/UserAccountLoginView'
 import UserAccountRegisterView from '../views/user/account/UserAccountRegisterView'
 import CakeView from '../views/birthday/CakeView'
+import GameView from '../views/birthday/GameMini.vue'
 
 import store from '../store/index'
 
@@ -80,14 +81,22 @@ const routes = [
   },
 
   {
-    path: "/lwy/goose/birthday/",
+    path: "/lwy/goose/beautiful/girl/",
     name: "cake",
     component: CakeView,
     meta: {
       requestAuth: true,
     }
   },
- 
+
+  {
+    path: "/lwy/goose/beautiful/girl/game/",
+    name: "game",
+    component: GameView,
+    meta: {
+      requestAuth: true,
+    }
+  },
 
   {
     path: "/404/",

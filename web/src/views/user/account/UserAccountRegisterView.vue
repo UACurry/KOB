@@ -45,7 +45,7 @@ export default {
 
         const register = () => {
             $.ajax({
-                url: "http://127.0.0.1/api/user/account/register/",
+                url: "https://lwy.gowarriors.top/api/user/account/register/",
                 type: "post",
                 // 看后端需要什么东西， controller里面
                 data: {

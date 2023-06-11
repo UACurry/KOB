@@ -79,7 +79,7 @@ export default {
         // 从云端动态获取bots
         const refresh_bots = () => {
             $.ajax({
-                url: "http://127.0.0.1/api/user/bot/getlist/",
+                url: "https://lwy.gowarriors.top/api/user/bot/getlist/",
                 type: "get",
                 headers: {
                     Authorization: "Bearer " + store.state.user.token,
